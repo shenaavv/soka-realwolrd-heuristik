@@ -475,11 +475,13 @@ docker ps
 ```
 
 cara menjalankan kembali
+
 ```bash
 docker start llfd-control-plan llfd-worker llfd-worker2
 ```
 
 periksa cluster kind
+
 ```bash
 kind get clusters
 ```
