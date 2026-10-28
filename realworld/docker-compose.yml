@@ -1,0 +1,50 @@
+name: llfd-cloud
+
+x-worker: &worker
+  build: .
+  restart: unless-stopped
+  cpu_period: 10000
+  networks: [dc-1]
+  healthcheck:
+    test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+    interval: 3s
+    timeout: 2s
+    retries: 10
+
+networks:
+  dc-1:
+    name: llfd-dc-1
+
+services:
+  vm-1:
+    <<: *worker
+    container_name: llfd-vm-1
+    environment: {VM_NAME: vm-1, VM_TYPE: V3, PORT: "8000"}
+    cpu_quota: 10000
+    mem_limit: 512m
+    labels: {soka.datacenter: DC-1, soka.host: host-1, soka.vm: vm-1}
+    ports: ["127.0.0.1:9101:8000"]
+  vm-2:
+    <<: *worker
+    container_name: llfd-vm-2
+    environment: {VM_NAME: vm-2, VM_TYPE: V2, PORT: "8000"}
+    cpu_quota: 6000
+    mem_limit: 512m
+    labels: {soka.datacenter: DC-1, soka.host: host-1, soka.vm: vm-2}
+    ports: ["127.0.0.1:9102:8000"]
+  vm-3:
+    <<: *worker
+    container_name: llfd-vm-3
+    environment: {VM_NAME: vm-3, VM_TYPE: V3, PORT: "8000"}
+    cpu_quota: 10000
+    mem_limit: 512m
+    labels: {soka.datacenter: DC-1, soka.host: host-2, soka.vm: vm-3}
+    ports: ["127.0.0.1:9103:8000"]
+  vm-4:
+    <<: *worker
+    container_name: llfd-vm-4
+    environment: {VM_NAME: vm-4, VM_TYPE: V2, PORT: "8000"}
+    cpu_quota: 6000
+    mem_limit: 512m
+    labels: {soka.datacenter: DC-1, soka.host: host-2, soka.vm: vm-4}
+    ports: ["127.0.0.1:9104:8000"]

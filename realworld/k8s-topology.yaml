@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dc-1
+  labels: {soka.datacenter: DC-1}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: vm-1, namespace: dc-1}
+spec:
+  replicas: 1
+  selector: {matchLabels: {soka.vm: vm-1}}
+  template:
+    metadata: {labels: {soka.vm: vm-1, soka.host: host-1}}
+    spec:
+      nodeSelector: {soka.host: host-1}
+      containers:
+        - name: worker
+          image: llfd-worker:1.0
+          imagePullPolicy: Never
+          env: [{name: VM_NAME, value: vm-1}, {name: VM_TYPE, value: V3}]
+          ports: [{containerPort: 8000}]
+          resources: {requests: {cpu: 50m, memory: 64Mi}, limits: {cpu: "1", memory: 512Mi}}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: vm-1, namespace: dc-1}
+spec:
+  selector: {soka.vm: vm-1}
+  ports: [{port: 8000, targetPort: 8000}]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: vm-2, namespace: dc-1}
+spec:
+  replicas: 1
+  selector: {matchLabels: {soka.vm: vm-2}}
+  template:
+    metadata: {labels: {soka.vm: vm-2, soka.host: host-1}}
+    spec:
+      nodeSelector: {soka.host: host-1}
+      containers:
+        - name: worker
+          image: llfd-worker:1.0
+          imagePullPolicy: Never
+          env: [{name: VM_NAME, value: vm-2}, {name: VM_TYPE, value: V2}]
+          ports: [{containerPort: 8000}]
+          resources: {requests: {cpu: 50m, memory: 64Mi}, limits: {cpu: 600m, memory: 512Mi}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: vm-3, namespace: dc-1}
+spec:
+  replicas: 1
+  selector: {matchLabels: {soka.vm: vm-3}}
+  template:
+    metadata: {labels: {soka.vm: vm-3, soka.host: host-2}}
+    spec:
+      nodeSelector: {soka.host: host-2}
+      containers:
+        - name: worker
+          image: llfd-worker:1.0
+          imagePullPolicy: Never
+          env: [{name: VM_NAME, value: vm-3}, {name: VM_TYPE, value: V3}]
+          ports: [{containerPort: 8000}]
+          resources: {requests: {cpu: 50m, memory: 64Mi}, limits: {cpu: "1", memory: 512Mi}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: vm-4, namespace: dc-1}
+spec:
+  replicas: 1
+  selector: {matchLabels: {soka.vm: vm-4}}
+  template:
+    metadata: {labels: {soka.vm: vm-4, soka.host: host-2}}
+    spec:
+      nodeSelector: {soka.host: host-2}
+      containers:
+        - name: worker
+          image: llfd-worker:1.0
+          imagePullPolicy: Never
+          env: [{name: VM_NAME, value: vm-4}, {name: VM_TYPE, value: V2}]
+          ports: [{containerPort: 8000}]
+          resources: {requests: {cpu: 50m, memory: 64Mi}, limits: {cpu: 600m, memory: 512Mi}}

@@ -1,0 +1,2 @@
+algorithm,datacenter,hosts,vms,tasks,total_length_mi,predicted_makespan_seconds,average_vm_load_seconds,min_vm_load_seconds,max_vm_load_seconds
+LLFD,DC-1,2,4,6000,1938475000.0,242316.66666666654,242310.83333333326,242300.0,242316.66666666654

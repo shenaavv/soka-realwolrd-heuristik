@@ -1,0 +1,1 @@
+LLFD dataset=GoogleClusterTrace_Dataset_2000.txt tasks=2000 makespan=82516.667s loads={"vm-1": 82500.0, "vm-2": 82500.00000000001, "vm-3": 82500.0, "vm-4": 82516.66666666667}

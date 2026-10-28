@@ -1,0 +1,10 @@
+# Google Cluster Workload Trace seed supplied for this experiment.
+# Values are normalized task length (MI) used by the LLFD real-world runner.
+900000
+600000
+450000
+300000
+150000
+100000
+75000
+50000
