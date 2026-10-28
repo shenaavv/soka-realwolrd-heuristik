@@ -461,6 +461,29 @@ docker logs llfd-vm-1
 Jika Docker tidak tersedia, gunakan `./run.sh plan` untuk menghasilkan mapping
 dan hasil analisis algoritma.
 
+
+Cara mematikan docker
+
+```bash
+sudo docker stop llfd-control-plan llfd-worker llfd-worker2
+```
+
+cara check docker yang berjalan
+
+```bash
+docker ps
+```
+
+cara menjalankan kembali
+```bash
+docker start llfd-control-plan llfd-worker llfd-worker2
+```
+
+periksa cluster kind
+```bash
+kind get clusters
+```
+
 ---
 
 ## 12. Menjalankan Kubernetes
