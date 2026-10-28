@@ -264,19 +264,19 @@ Gunakan penjelasan berikut:
 > dan `vm-4` pada `host-2`. Task kemudian dialokasikan ke VM menggunakan
 > algoritma LLFD.
 
-Jika ditanya datacenternya:
+datacenternya:
 
 ```text
 Datacenter = Namespace dc-1 dengan label soka.datacenter=DC-1
 ```
 
-Jika ditanya host-nya:
+host-nya:
 
 ```text
 Host = Kubernetes worker node llfd-worker dan llfd-worker2
 ```
 
-Jika ditanya VM-nya:
+VM-nya:
 
 ```text
 VM = Pod worker vm-1, vm-2, vm-3, dan vm-4
