@@ -20,6 +20,34 @@ VMS = (
 )
 
 
+def optimization_metrics(plan):
+    """Return explainable LLFD load-balance indicators."""
+    loads = plan["loads"]
+    makespan = plan["makespan_predicted_seconds"]
+    average_load = sum(loads.values()) / len(loads) if loads else 0.0
+    min_load = min(loads.values(), default=0.0)
+    max_load = max(loads.values(), default=0.0)
+    total_mi = sum(task["length_mi"] for task in plan["tasks"])
+    total_mips = sum(vm["mips"] for vm in plan["vms"])
+    ideal_makespan = total_mi / total_mips if total_mips else 0.0
+    return {
+        "average_load_seconds": average_load,
+        "min_load_seconds": min_load,
+        "max_load_seconds": max_load,
+        "load_balance_efficiency_percent": (
+            average_load / max_load * 100 if max_load else 100.0
+        ),
+        "load_imbalance_percent": (
+            (max_load - min_load) / max_load * 100 if max_load else 0.0
+        ),
+        "ideal_makespan_lower_bound_seconds": ideal_makespan,
+        "makespan_gap_from_ideal_percent": (
+            (makespan / ideal_makespan - 1) * 100
+            if ideal_makespan else 0.0
+        ),
+    }
+
+
 def print_report(plan, dataset, mode):
     """Print the experiment report in a readable, reference-style format."""
     assignments = plan["assignments"]
@@ -67,6 +95,17 @@ def print_report(plan, dataset, mode):
     print(f"  average VM load    : {sum(loads.values()) / len(loads):.3f} s")
     print(f"  min VM load        : {min(loads.values()):.3f} s")
     print(f"  max VM load        : {max(loads.values()):.3f} s")
+    metrics = optimization_metrics(plan)
+    print("-" * 78)
+    print("LLFD OPTIMIZATION INDICATORS")
+    print(f"  load-balance efficiency : "
+          f"{metrics['load_balance_efficiency_percent']:.2f}%")
+    print(f"  load imbalance          : "
+          f"{metrics['load_imbalance_percent']:.2f}%")
+    print(f"  ideal makespan lower bound: "
+          f"{metrics['ideal_makespan_lower_bound_seconds']:.3f} s")
+    print(f"  makespan gap vs ideal   : "
+          f"{metrics['makespan_gap_from_ideal_percent']:.2f}%")
     print("=" * 78)
 
 
@@ -109,6 +148,7 @@ def main():
         parser.error("--iterations-per-mi harus positif")
 
     plan = plan_as_dict(read_tasks(args.dataset), VMS)
+    plan["optimization"] = optimization_metrics(plan)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")
     if args.task_output:
@@ -129,19 +169,28 @@ def main():
             writer.writerow(["algorithm", "datacenter", "hosts", "vms", "tasks",
                              "total_length_mi", "predicted_makespan_seconds",
                              "average_vm_load_seconds", "min_vm_load_seconds",
-                             "max_vm_load_seconds"])
+                             "max_vm_load_seconds", "load_balance_efficiency_percent",
+                             "load_imbalance_percent", "ideal_makespan_lower_bound_seconds",
+                             "makespan_gap_from_ideal_percent"])
             writer.writerow([
                 "LLFD", "DC-1", 2, 4, len(plan["tasks"]),
                 sum(task["length_mi"] for task in plan["tasks"]),
                 plan["makespan_predicted_seconds"],
-                sum(loads) / len(plan["loads"]),
-                min(loads),
-                max(loads),
+                plan["optimization"]["average_load_seconds"],
+                plan["optimization"]["min_load_seconds"],
+                plan["optimization"]["max_load_seconds"],
+                plan["optimization"]["load_balance_efficiency_percent"],
+                plan["optimization"]["load_imbalance_percent"],
+                plan["optimization"]["ideal_makespan_lower_bound_seconds"],
+                plan["optimization"]["makespan_gap_from_ideal_percent"],
             ])
     if args.compact:
         print(
             f"LLFD dataset={args.dataset.name} tasks={len(plan['tasks'])} "
             f"makespan={plan['makespan_predicted_seconds']:.3f}s "
+            f"load_balance_efficiency="
+            f"{plan['optimization']['load_balance_efficiency_percent']:.2f}% "
+            f"load_imbalance={plan['optimization']['load_imbalance_percent']:.2f}% "
             f"loads={json.dumps(plan['loads'], sort_keys=True)}"
         )
     else:

@@ -29,7 +29,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
-    parser.add_argument("--sizes", default="100,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000")
+    parser.add_argument("--sizes", default="100,1000")
     parser.add_argument("--seed", type=int, default=2026)
     args = parser.parse_args()
     sizes = [int(value) for value in args.sizes.split(",")]

@@ -1,0 +1,7 @@
+session=20261029_162036
+algorithm=LLFD
+datacenter=DC-1
+hosts=2
+vms_per_host=2
+dataset=src/main/resources/dataset/generated/GoogleClusterTrace_Dataset_1000.txt
+mode=docker

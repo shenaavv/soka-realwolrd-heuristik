@@ -31,6 +31,7 @@ terstruktur seperti project simulator pada referensi.
 - [10. Cara Menjalankan](#10-cara-menjalankan)
 - [11. Menjalankan Docker](#11-menjalankan-docker)
 - [12. Menjalankan Kubernetes](#12-menjalankan-kubernetes)
+- [Panduan lengkap Docker dan Kubernetes](docs/run-guide.md)
 - [13. Contoh Hasil](#13-contoh-hasil)
 - [14. Verifikasi Topologi](#14-verifikasi-topologi)
 - [15. Batasan Implementasi](#15-batasan-implementasi)
@@ -182,8 +183,9 @@ Sehingga:
 
 Pada Docker Compose:
 
-- satu service = satu VM;
+- satu service/container = satu VM;
 - satu container menjalankan satu worker;
+- `host-1` dan `host-2` adalah label host logis, bukan container host;
 - `cpu_quota` membatasi kapasitas CPU relatif VM;
 - label `soka.datacenter`, `soka.host`, dan `soka.vm` menyimpan metadata
   topologi;
@@ -196,6 +198,8 @@ Pada Kubernetes:
 - namespace `dc-1` mewakili DC-1;
 - dua node worker diberi label `soka.host=host-1` dan
   `soka.host=host-2`;
+- node Kubernetes worker adalah host, sedangkan application worker berjalan di
+  dalam Pod;
 - setiap Deployment memiliki satu replica;
 - `nodeSelector` memastikan VM berada pada host yang benar;
 - empat Deployment menghasilkan empat Pod/VM;
@@ -204,6 +208,7 @@ Pada Kubernetes:
 Konfigurasi Kind berada di
 [realworld/kind-config.yaml](realworld/kind-config.yaml), sedangkan resource
 Kubernetes berada di [realworld/k8s-topology.yaml](realworld/k8s-topology.yaml).
+Panduan command lengkap tersedia di [docs/run-guide.md](docs/run-guide.md).
 
 ---
 
@@ -351,6 +356,8 @@ Menyimpan:
 - predicted execution time;
 - accumulated load;
 - predicted makespan.
+- load-balance efficiency dan load imbalance;
+- ideal makespan lower bound serta gap makespan terhadap batas ideal.
 
 ### 8.4 `tasks_LLFD_n<N>_run1.csv`
 
@@ -443,7 +450,13 @@ Mode Docker menjalankan proses berikut:
 4. menjalankan scheduler LLFD;
 5. mengirim task ke worker;
 6. menyimpan hasil dan log;
-7. mematikan container melalui cleanup otomatis.
+7. mempertahankan container agar proses dapat didemonstrasikan.
+
+Runner menunggu healthcheck keempat container selesai sebelum mengirim task,
+sehingga worker yang masih startup tidak menerima request terlalu awal.
+Container tidak dimatikan otomatis. Gunakan
+`docker compose -f realworld/docker-compose.yml down` setelah demo, atau
+`KEEP_RUNTIME=0 ./run.sh docker` untuk cleanup otomatis.
 
 Jalankan:
 
@@ -458,6 +471,14 @@ docker compose -f realworld/docker-compose.yml ps
 docker logs llfd-vm-1
 ```
 
+Selama `./run.sh docker` berjalan, log semua worker juga ditampilkan langsung di
+terminal dan disimpan di `realworld/results/sessions/<session>/logs/docker-workers.log`.
+Output LLFD tetap ditampilkan di terminal dan disimpan di `logs/llfd.log`.
+Container tetap hidup setelah proses selesai agar dapat didemonstrasikan. Status
+akhirnya disimpan di `logs/docker-compose-final-status.log`. Jika hanya ingin
+mempertahankan container tanpa mengubah pengaturan cluster, gunakan
+`KEEP_CONTAINERS=1`; untuk cleanup otomatis gunakan `KEEP_RUNTIME=0`.
+
 Jika Docker tidak tersedia, gunakan `./run.sh plan` untuk menghasilkan mapping
 dan hasil analisis algoritma.
 
@@ -471,13 +492,13 @@ sudo docker stop llfd-control-plan llfd-worker llfd-worker2
 cara check docker yang berjalan
 
 ```bash
-docker ps
+sudo docker ps
 ```
 
 cara menjalankan kembali
 
 ```bash
-docker start llfd-control-plan llfd-worker llfd-worker2
+sudo docker start llfd-control-plan llfd-worker llfd-worker2
 ```
 
 periksa cluster kind
@@ -485,6 +506,14 @@ periksa cluster kind
 ```bash
 kind get clusters
 ```
+
+Pada mode Kubernetes, output worker ditampilkan langsung di terminal dan
+disimpan per VM di `logs/kubernetes-vm-<nomor>.log`; status Pod disimpan di
+`kubernetes-pods.txt`.
+Secara default resource Kubernetes dan cluster Kind tetap hidup setelah proses
+agar Pod dan Service dapat ditunjukkan saat demo. Gunakan
+`kind delete cluster --name llfd` setelah demo, atau
+`KEEP_RUNTIME=0 ./run.sh kind` untuk cleanup otomatis.
 
 ---
 
@@ -875,12 +904,15 @@ atau:
 
 Eksperimen skala menggunakan seed workload
 `src/main/resources/dataset/google_cluster_trace_sample.txt`. Generator
-memperluas workload trace tersebut secara deterministic menjadi:
+memperluas workload trace tersebut secara deterministic menjadi dua ukuran
+default:
 
 ```text
-100, 1000, 2000, 3000, 4000, 5000,
-6000, 7000, 8000, 9000, 10000 task
+100 dan 1000 task
 ```
+
+Ukuran tambahan dapat dipilih dengan opsi `--sizes` atau environment variable
+`SIZES`, tetapi script `run.sh` secara default selalu menjalankan 100 dan 1000.
 
 Nilai `lengthMI` diambil dari workload trace seed dengan bootstrap resampling
 yang memiliki seed tetap, sehingga ukuran dataset dapat diulang dan hasilnya
@@ -897,19 +929,10 @@ Output generator:
 ```text
 src/main/resources/dataset/generated/
 ├── GoogleClusterTrace_Dataset_100.txt
-├── GoogleClusterTrace_Dataset_1000.txt
-├── GoogleClusterTrace_Dataset_2000.txt
-├── GoogleClusterTrace_Dataset_3000.txt
-├── GoogleClusterTrace_Dataset_4000.txt
-├── GoogleClusterTrace_Dataset_5000.txt
-├── GoogleClusterTrace_Dataset_6000.txt
-├── GoogleClusterTrace_Dataset_7000.txt
-├── GoogleClusterTrace_Dataset_8000.txt
-├── GoogleClusterTrace_Dataset_9000.txt
-└── GoogleClusterTrace_Dataset_10000.txt
+└── GoogleClusterTrace_Dataset_1000.txt
 ```
 
-### 17.1 Plan Semua Skala
+### 17.1 Plan Dataset 100 dan 1000
 
 Untuk menguji LLFD pada seluruh skala tanpa infrastructure:
 
@@ -925,17 +948,16 @@ realworld/results/sessions/<timestamp>/
 │   ├── dataset-generation.log
 │   ├── llfd_100.log
 │   ├── llfd_1000.log
-│   └── ... llfd_10000.log
+│   └── llfd_1000.log
 ├── mappings/
 │   ├── llfd_mapping_100.json
-│   └── ... llfd_mapping_10000.json
+│   └── llfd_mapping_1000.json
 ├── summary_100.csv
-├── ...
-├── summary_10000.csv
+├── summary_1000.csv
 └── scale-summary.csv
 ```
 
-### 17.2 Eksekusi Semua Skala di Kubernetes
+### 17.2 Eksekusi Dataset 100 dan 1000 di Kubernetes
 
 Perintah utama untuk requirement real-world cloud:
 
@@ -951,7 +973,7 @@ Perintah utama untuk requirement real-world cloud:
 4. menjalankan empat VM sebagai Pod;
 5. membuat port-forward ke seluruh VM;
 6. melakukan health check seluruh worker;
-7. menghasilkan dataset 100 sampai 10.000 task;
+7. menghasilkan dataset 100 dan 1000 task;
 8. menjalankan LLFD pada setiap ukuran melalui endpoint Kubernetes;
 9. menyimpan mapping, task CSV, result, summary, dan log per ukuran;
 10. menggabungkan metrik ke `scale-summary.csv`;
@@ -962,8 +984,6 @@ Contoh output terminal:
 ```text
 generated .../GoogleClusterTrace_Dataset_100.txt (100 tasks)
 generated .../GoogleClusterTrace_Dataset_1000.txt (1000 tasks)
-...
-generated .../GoogleClusterTrace_Dataset_10000.txt (10000 tasks)
 Kubernetes worker siap; menjalankan LLFD pada 4 VM.
 {"status": "ok", "vm": "vm-1", "vm_type": "V3"}
 {"status": "ok", "vm": "vm-2", "vm_type": "V2"}
@@ -971,26 +991,21 @@ Kubernetes worker siap; menjalankan LLFD pada 4 VM.
 {"status": "ok", "vm": "vm-4", "vm_type": "V2"}
 LLFD dataset=GoogleClusterTrace_Dataset_100.txt tasks=100 makespan=...s loads=...
 LLFD dataset=GoogleClusterTrace_Dataset_1000.txt tasks=1000 makespan=...s loads=...
-...
-LLFD dataset=GoogleClusterTrace_Dataset_10000.txt tasks=10000 makespan=...s loads=...
 ```
 
 Contoh `scale-summary.csv`:
 
 ```csv
-dataset,tasks,predicted_makespan_seconds,average_vm_load_seconds,min_vm_load_seconds,max_vm_load_seconds
+dataset,tasks,predicted_makespan_seconds,average_vm_load_seconds,min_vm_load_seconds,max_vm_load_seconds,load_balance_efficiency_percent,load_imbalance_percent,ideal_makespan_lower_bound_seconds,makespan_gap_from_ideal_percent
 GoogleClusterTrace_Dataset_100,100,4360.0,4352.5,4350.0,4360.0
 GoogleClusterTrace_Dataset_1000,1000,41300.0,41292.5,41280.0,41300.0
-GoogleClusterTrace_Dataset_2000,2000,82516.667,82504.167,82500.0,82516.667
-...
-GoogleClusterTrace_Dataset_10000,10000,408616.667,408606.667,408600.0,408616.667
 ```
 
 Nilai aktual `scale-summary.csv` mengikuti hasil sampling deterministic dan
 disimpan di folder session. Untuk menjalankan skala tertentu saja:
 
 ```bash
-SIZES=100,1000,10000 ./run.sh kind-scale
+SIZES=1000 ./run.sh kind-scale
 ```
 
 Mode `kind-scale` memerlukan Docker, Kind, kubectl, dan resource CPU/RAM yang
@@ -1014,10 +1029,10 @@ realworld/results/sessions/20261028_225640/
 └── tasks_GoogleClusterTrace_n10000_run1.csv
 ```
 
-Contoh isi `logs/llfd_10000.log`:
+Contoh isi `logs/llfd_1000.log`:
 
 ```text
-LLFD dataset=GoogleClusterTrace_Dataset_10000.txt tasks=10000 makespan=408616.667s loads={"vm-1": 408600.0, "vm-2": 408616.667, "vm-3": 408610.0, "vm-4": 408600.0}
+LLFD dataset=GoogleClusterTrace_Dataset_1000.txt tasks=1000 makespan=41300.000s loads={"vm-1": 41280.0, "vm-2": 41300.0, "vm-3": 41290.0, "vm-4": 41300.0}
 ```
 
 ### 17.3 Troubleshooting `kind-scale`

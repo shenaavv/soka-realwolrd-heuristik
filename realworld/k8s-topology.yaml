@@ -29,6 +29,13 @@ spec:
   selector: {soka.vm: vm-1}
   ports: [{port: 8000, targetPort: 8000}]
 ---
+apiVersion: v1
+kind: Service
+metadata: {name: vm-2, namespace: dc-1}
+spec:
+  selector: {soka.vm: vm-2}
+  ports: [{port: 8000, targetPort: 8000}]
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata: {name: vm-2, namespace: dc-1}
@@ -65,6 +72,13 @@ spec:
           ports: [{containerPort: 8000}]
           resources: {requests: {cpu: 50m, memory: 64Mi}, limits: {cpu: "1", memory: 512Mi}}
 ---
+apiVersion: v1
+kind: Service
+metadata: {name: vm-3, namespace: dc-1}
+spec:
+  selector: {soka.vm: vm-3}
+  ports: [{port: 8000, targetPort: 8000}]
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata: {name: vm-4, namespace: dc-1}
@@ -82,3 +96,10 @@ spec:
           env: [{name: VM_NAME, value: vm-4}, {name: VM_TYPE, value: V2}]
           ports: [{containerPort: 8000}]
           resources: {requests: {cpu: 50m, memory: 64Mi}, limits: {cpu: 600m, memory: 512Mi}}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: vm-4, namespace: dc-1}
+spec:
+  selector: {soka.vm: vm-4}
+  ports: [{port: 8000, targetPort: 8000}]

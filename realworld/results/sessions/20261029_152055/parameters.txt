@@ -1,0 +1,7 @@
+session=20261029_152055
+algorithm=LLFD
+datacenter=DC-1
+hosts=2
+vms_per_host=2
+dataset=src/main/resources/dataset/google_cluster_trace_sample.txt
+mode=plan

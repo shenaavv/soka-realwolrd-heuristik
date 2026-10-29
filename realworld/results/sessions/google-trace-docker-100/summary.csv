@@ -1,0 +1,2 @@
+algorithm,datacenter,hosts,vms,tasks,total_length_mi,predicted_makespan_seconds,average_vm_load_seconds,min_vm_load_seconds,max_vm_load_seconds,load_balance_efficiency_percent,load_imbalance_percent,ideal_makespan_lower_bound_seconds,makespan_gap_from_ideal_percent
+LLFD,DC-1,2,4,100,34825000.0,4360.0,4352.5,4349.999999999999,4360.0,99.82798165137615,0.2293577981651585,4353.125,0.15793251974156597

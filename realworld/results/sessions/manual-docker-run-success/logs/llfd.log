@@ -1,0 +1,50 @@
+
+==============================================================================
+LLFD REAL-WORLD EXPERIMENT
+==============================================================================
+algorithm       : LLFD (Least-Loaded First-Fit Decreasing)
+mode            : real-world
+dataset         : /home/hanz006/IT_ITS/soka/soka-realwolrd-heuristik/src/main/resources/dataset/google_cluster_trace_sample.txt
+datacenter      : DC-1
+hosts           : 2
+vm per host     : 2
+total VM        : 4
+total task      : 8
+total length MI : 2,625,000
+------------------------------------------------------------------------------
+TOPOLOGY
+  DC-1/host-1
+    vm-1: 4 PE x 2,500 MIPS -> http://127.0.0.1:9101
+    vm-2: 2 PE x 1,500 MIPS -> http://127.0.0.1:9102
+  DC-1/host-2
+    vm-3: 4 PE x 2,500 MIPS -> http://127.0.0.1:9103
+    vm-4: 2 PE x 1,500 MIPS -> http://127.0.0.1:9104
+------------------------------------------------------------------------------
+SCHEDULING TRACE (FFD order, then least accumulated load)
+order  task     lengthMI     VM     host      exec(s)  fallback
+    1     0      900,000   vm-1   host-1      360.000     False
+    2     1      600,000   vm-2   host-1      400.000     False
+    3     2      450,000   vm-3   host-2      180.000     False
+    4     3      300,000   vm-4   host-2      200.000     False
+    5     4      150,000   vm-3   host-2       60.000     False
+    6     5      100,000   vm-4   host-2       66.667     False
+    7     6       75,000   vm-3   host-2       30.000     False
+    8     7       50,000   vm-4   host-2       33.333     False
+------------------------------------------------------------------------------
+VM LOAD SUMMARY
+    VM     host   tasks        load(s)      share
+  vm-1   host-1       1        360.000     90.0%
+  vm-2   host-1       1        400.000    100.0%
+  vm-3   host-2       3        270.000     67.5%
+  vm-4   host-2       3        300.000     75.0%
+------------------------------------------------------------------------------
+METRICS
+  predicted makespan : 400.000 s
+  average VM load    : 332.500 s
+  min VM load        : 270.000 s
+  max VM load        : 400.000 s
+==============================================================================
+
+EXECUTION RESULT: 8 task selesai
+real elapsed time : 0.679 s
+result file       : realworld/results/sessions/manual-docker-run-success/llfd-result.json

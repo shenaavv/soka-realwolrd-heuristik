@@ -1,0 +1,148 @@
+
+==============================================================================
+LLFD REAL-WORLD EXPERIMENT
+==============================================================================
+algorithm       : LLFD (Least-Loaded First-Fit Decreasing)
+mode            : real-world
+dataset         : /home/hanz006/IT_ITS/soka/soka-realwolrd-heuristik/src/main/resources/dataset/generated/GoogleClusterTrace_Dataset_100.txt
+datacenter      : DC-1
+hosts           : 2
+vm per host     : 2
+total VM        : 4
+total task      : 100
+total length MI : 34,825,000
+------------------------------------------------------------------------------
+TOPOLOGY
+  DC-1/host-1
+    vm-1: 4 PE x 2,500 MIPS -> http://127.0.0.1:9101
+    vm-2: 2 PE x 1,500 MIPS -> http://127.0.0.1:9102
+  DC-1/host-2
+    vm-3: 4 PE x 2,500 MIPS -> http://127.0.0.1:9103
+    vm-4: 2 PE x 1,500 MIPS -> http://127.0.0.1:9104
+------------------------------------------------------------------------------
+SCHEDULING TRACE (FFD order, then least accumulated load)
+order  task     lengthMI     VM     host      exec(s)  fallback
+    1     6      900,000   vm-1   host-1      360.000     False
+    2    12      900,000   vm-2   host-1      600.000     False
+    3    27      900,000   vm-3   host-2      360.000     False
+    4    36      900,000   vm-4   host-2      600.000     False
+    5    37      900,000   vm-1   host-1      360.000     False
+    6    57      900,000   vm-3   host-2      360.000     False
+    7    69      900,000   vm-2   host-1      600.000     False
+    8    70      900,000   vm-4   host-2      600.000     False
+    9    90      900,000   vm-1   host-1      360.000     False
+   10    97      900,000   vm-3   host-2      360.000     False
+   11     0      600,000   vm-1   host-1      240.000     False
+   12    14      600,000   vm-3   host-2      240.000     False
+   13    17      600,000   vm-2   host-1      400.000     False
+   14    19      600,000   vm-4   host-2      400.000     False
+   15    20      600,000   vm-1   host-1      240.000     False
+   16    32      600,000   vm-3   host-2      240.000     False
+   17    40      600,000   vm-1   host-1      240.000     False
+   18    41      600,000   vm-3   host-2      240.000     False
+   19    51      600,000   vm-2   host-1      400.000     False
+   20    58      600,000   vm-4   host-2      400.000     False
+   21    60      600,000   vm-1   host-1      240.000     False
+   22    61      600,000   vm-3   host-2      240.000     False
+   23    62      600,000   vm-2   host-1      400.000     False
+   24    72      600,000   vm-4   host-2      400.000     False
+   25    79      600,000   vm-1   host-1      240.000     False
+   26    80      600,000   vm-3   host-2      240.000     False
+   27    81      600,000   vm-1   host-1      240.000     False
+   28    87      600,000   vm-3   host-2      240.000     False
+   29    91      600,000   vm-2   host-1      400.000     False
+   30    95      600,000   vm-4   host-2      400.000     False
+   31    96      600,000   vm-1   host-1      240.000     False
+   32    98      600,000   vm-3   host-2      240.000     False
+   33    99      600,000   vm-1   host-1      240.000     False
+   34     3      450,000   vm-3   host-2      180.000     False
+   35    39      450,000   vm-2   host-1      300.000     False
+   36    56      450,000   vm-4   host-2      300.000     False
+   37    63      450,000   vm-3   host-2      180.000     False
+   38    67      450,000   vm-1   host-1      180.000     False
+   39    74      450,000   vm-2   host-1      300.000     False
+   40    83      450,000   vm-4   host-2      300.000     False
+   41    84      450,000   vm-3   host-2      180.000     False
+   42    85      450,000   vm-1   host-1      180.000     False
+   43    86      450,000   vm-3   host-2      180.000     False
+   44    88      450,000   vm-1   host-1      180.000     False
+   45    89      450,000   vm-2   host-1      300.000     False
+   46    92      450,000   vm-4   host-2      300.000     False
+   47    94      450,000   vm-3   host-2      180.000     False
+   48    18      300,000   vm-1   host-1      120.000     False
+   49    29      300,000   vm-1   host-1      120.000     False
+   50    42      300,000   vm-3   host-2      120.000     False
+   51    50      300,000   vm-2   host-1      200.000     False
+   52    53      300,000   vm-4   host-2      200.000     False
+   53    78      300,000   vm-1   host-1      120.000     False
+   54     5      150,000   vm-3   host-2       60.000     False
+   55    11      150,000   vm-3   host-2       60.000     False
+   56    16      150,000   vm-1   host-1       60.000     False
+   57    45      150,000   vm-2   host-1      100.000     False
+   58    48      150,000   vm-3   host-2       60.000     False
+   59    65      150,000   vm-4   host-2      100.000     False
+   60    71      150,000   vm-1   host-1       60.000     False
+   61     2      100,000   vm-3   host-2       40.000     False
+   62    13      100,000   vm-2   host-1       66.667     False
+   63    25      100,000   vm-3   host-2       40.000     False
+   64    26      100,000   vm-4   host-2       66.667     False
+   65    28      100,000   vm-1   host-1       40.000     False
+   66    46      100,000   vm-3   host-2       40.000     False
+   67    52      100,000   vm-1   host-1       40.000     False
+   68    64      100,000   vm-2   host-1       66.667     False
+   69    73      100,000   vm-4   host-2       66.667     False
+   70    75      100,000   vm-3   host-2       40.000     False
+   71     4       75,000   vm-1   host-1       30.000     False
+   72    15       75,000   vm-3   host-2       30.000     False
+   73    22       75,000   vm-1   host-1       30.000     False
+   74    23       75,000   vm-2   host-1       50.000     False
+   75    30       75,000   vm-4   host-2       50.000     False
+   76    31       75,000   vm-3   host-2       30.000     False
+   77    33       75,000   vm-1   host-1       30.000     False
+   78    35       75,000   vm-3   host-2       30.000     False
+   79    38       75,000   vm-2   host-1       50.000     False
+   80    54       75,000   vm-4   host-2       50.000     False
+   81    59       75,000   vm-1   host-1       30.000     False
+   82    66       75,000   vm-3   host-2       30.000     False
+   83    76       75,000   vm-1   host-1       30.000     False
+   84    82       75,000   vm-2   host-1       50.000     False
+   85    93       75,000   vm-4   host-2       50.000     False
+   86     1       50,000   vm-3   host-2       20.000     False
+   87     7       50,000   vm-1   host-1       20.000     False
+   88     8       50,000   vm-3   host-2       20.000     False
+   89     9       50,000   vm-1   host-1       20.000     False
+   90    10       50,000   vm-3   host-2       20.000     False
+   91    21       50,000   vm-2   host-1       33.333     False
+   92    24       50,000   vm-4   host-2       33.333     False
+   93    34       50,000   vm-1   host-1       20.000     False
+   94    43       50,000   vm-3   host-2       20.000     False
+   95    44       50,000   vm-1   host-1       20.000     False
+   96    47       50,000   vm-2   host-1       33.333     False
+   97    49       50,000   vm-4   host-2       33.333     False
+   98    55       50,000   vm-3   host-2       20.000     False
+   99    68       50,000   vm-1   host-1       20.000     False
+  100    77       50,000   vm-3   host-2       20.000     False
+------------------------------------------------------------------------------
+VM LOAD SUMMARY
+    VM     host   tasks        load(s)      share
+  vm-1   host-1      31       4350.000     99.8%
+  vm-2   host-1      18       4350.000     99.8%
+  vm-3   host-2      33       4360.000    100.0%
+  vm-4   host-2      18       4350.000     99.8%
+------------------------------------------------------------------------------
+METRICS
+  predicted makespan : 4360.000 s
+  average VM load    : 4352.500 s
+  min VM load        : 4350.000 s
+  max VM load        : 4360.000 s
+------------------------------------------------------------------------------
+LLFD OPTIMIZATION INDICATORS
+  load-balance efficiency : 99.83%
+  load imbalance          : 0.23%
+  ideal makespan lower bound: 4353.125 s
+  makespan gap vs ideal   : 0.16%
+==============================================================================
+
+EXECUTION RESULT: 100 task selesai
+real elapsed time : 0.072 s
+result file       : realworld/results/sessions/demo-kind-100-1000/llfd-result.json

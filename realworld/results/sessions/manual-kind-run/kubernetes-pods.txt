@@ -1,0 +1,5 @@
+NAME                    READY   STATUS    RESTARTS   AGE   IP           NODE           NOMINATED NODE   READINESS GATES
+vm-1-66cb7f59cd-crn9c   1/1     Running   0          1s    10.244.2.2   llfd-worker    <none>           <none>
+vm-2-69586d697b-hh4lf   1/1     Running   0          1s    10.244.2.3   llfd-worker    <none>           <none>
+vm-3-7574659f74-gkxdx   1/1     Running   0          1s    10.244.1.2   llfd-worker2   <none>           <none>
+vm-4-6b9d87d5d4-2fzwm   1/1     Running   0          1s    10.244.1.3   llfd-worker2   <none>           <none>

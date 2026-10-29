@@ -1,0 +1,5 @@
+NAME        IMAGE             COMMAND               SERVICE   CREATED         STATUS                   PORTS
+llfd-vm-1   llfd-cloud-vm-1   "python /worker.py"   vm-1      6 seconds ago   Up 4 seconds (healthy)   127.0.0.1:9101->8000/tcp
+llfd-vm-2   llfd-cloud-vm-2   "python /worker.py"   vm-2      6 seconds ago   Up 4 seconds (healthy)   127.0.0.1:9102->8000/tcp
+llfd-vm-3   llfd-cloud-vm-3   "python /worker.py"   vm-3      6 seconds ago   Up 6 seconds (healthy)   127.0.0.1:9103->8000/tcp
+llfd-vm-4   llfd-cloud-vm-4   "python /worker.py"   vm-4      6 seconds ago   Up 5 seconds (healthy)   127.0.0.1:9104->8000/tcp

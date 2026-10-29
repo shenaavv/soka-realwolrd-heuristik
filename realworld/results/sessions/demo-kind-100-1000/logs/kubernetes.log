@@ -1,0 +1,2 @@
+ERROR: command Kubernetes berikut belum tersedia di PATH: kind
+Install tools tersebut dan aktifkan Docker Desktop WSL integration.

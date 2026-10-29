@@ -1,0 +1,7 @@
+{"status": "ok", "vm": "vm-1", "vm_type": "V3"}
+{"status": "ok", "vm": "vm-1", "vm_type": "V3"}
+ERROR: Kubernetes worker vm-2 tidak merespons setelah 30 detik.
+{"status": "ok", "vm": "vm-1", "vm_type": "V3"}
+{"status": "ok", "vm": "vm-2", "vm_type": "V2"}
+{"status": "ok", "vm": "vm-3", "vm_type": "V3"}
+{"status": "ok", "vm": "vm-4", "vm_type": "V2"}
