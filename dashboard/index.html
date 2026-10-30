@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SOKA | LLFD Monitoring</title>
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">S</div><div><b>SOKA</b><small>LLFD MONITORING</small></div></div>
+    <div class="nav-label">MONITORING</div>
+    <a class="nav active" href="#overview"><span>▦</span> Overview</a>
+    <a class="nav" href="#topology"><span>⌘</span> Infrastructure</a>
+    <a class="nav" href="#tasks"><span>≡</span> Task Assignments</a>
+    <a class="nav" href="#logs"><span>▤</span> Event Logs</a>
+    <div class="sidebar-bottom"><span class="pulse"></span> Dashboard service <b>ONLINE</b><small>Local monitoring interface</small></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div><div class="eyebrow">REAL-WORLD HEURISTIC SCHEDULER</div><h1>LLFD Overview</h1></div><div class="top-actions"><span class="live"><i></i> LIVE REFRESH</span><span id="updated">Waiting for data</span></div></header>
+    <section class="toolbar"><div><b>Experiment session</b><span id="session">—</span></div><div><span class="tag blue">ALGORITHM: LLFD</span><span id="mode" class="tag">WAITING</span><button id="refresh">Refresh</button></div></section>
+    <section id="empty" class="empty hidden">No experiment data found. Run <code>./run.sh plan</code> or <code>./run.sh docker</code>, then refresh this page.</section>
+    <section id="content">
+      <div class="section-head"><div><h2>Scheduler summary</h2><p>Key indicators from the latest experiment session</p></div><span class="subtle">AUTO REFRESH · 3 SECONDS</span></div>
+      <div class="metrics">
+        <article class="metric"><div class="metric-label">TOTAL TASKS <span>▦</span></div><strong id="tasks">—</strong><small>Tasks in current dataset</small></article>
+        <article class="metric"><div class="metric-label">COMPLETED TASKS <span>✓</span></div><strong id="completed">—</strong><small id="completion-note">Execution result</small></article>
+        <article class="metric"><div class="metric-label">PREDICTED MAKESPAN <span>◷</span></div><strong id="makespan">—</strong><small>Seconds · LLFD prediction</small></article>
+        <article class="metric"><div class="metric-label">REAL EXECUTION <span>⌁</span></div><strong id="elapsed">—</strong><small>Seconds · worker execution</small></article>
+      </div>
+      <div class="section-head chart-section-head"><div><h2>Performance analytics</h2><p>Visualisasi distribusi beban dan estimasi penjadwalan dari hasil LLFD</p></div><span class="subtle">BASED ON LATEST MAPPING</span></div>
+      <div class="chart-grid">
+        <article class="panel chart-panel"><div class="panel-head"><div><h3>Predicted load per VM</h3><p>Total estimasi waktu pemrosesan pada setiap VM</p></div><span class="tag blue">SECONDS</span></div><div class="canvas-wrap"><canvas id="load-chart" aria-label="Grafik beban prediksi per VM"></canvas></div></article>
+        <article class="panel chart-panel"><div class="panel-head"><div><h3>Task distribution</h3><p>Jumlah task yang dialokasikan ke setiap VM</p></div><span class="tag">TASK COUNT</span></div><div class="canvas-wrap donut-wrap"><canvas id="distribution-chart" aria-label="Grafik distribusi task per VM"></canvas></div><div id="distribution-legend" class="chart-legend"></div></article>
+        <article class="panel chart-panel chart-wide"><div class="panel-head"><div><h3>Predicted execution time by task</h3><p>Estimasi durasi tiap task sesuai VM hasil penjadwalan</p></div><span class="tag blue">SECONDS / TASK</span></div><div class="canvas-wrap line-wrap"><canvas id="task-chart" aria-label="Grafik estimasi waktu eksekusi tiap task"></canvas></div></article>
+      </div>
+      <div class="grid two">
+        <article class="panel"><div class="panel-head"><div><h3>VM workload distribution</h3><p>Accumulated predicted load per VM</p></div><span class="tag blue">DC-1</span></div><div id="vm-chart" class="bars"><div class="muted">Waiting for mapping data…</div></div></article>
+        <article class="panel"><div class="panel-head"><div><h3>Infrastructure status</h3><p>Logical datacenter and worker containers</p></div><span class="tag green">4 VMs CONFIGURED</span></div><div class="infra"><div class="dc">▣ &nbsp; DC-1 <small>Datacenter</small></div><div class="hosts"><div class="host"><b>HOST-1</b><div class="vm" id="vm1">vm-1</div><div class="vm" id="vm2">vm-2</div></div><div class="host"><b>HOST-2</b><div class="vm" id="vm3">vm-3</div><div class="vm" id="vm4">vm-4</div></div></div><div id="worker-note" class="muted">Worker status is read from Docker when available.</div></div></article>
+      </div>
+      <div class="grid two">
+        <article class="panel"><div class="panel-head"><div><h3>Optimization indicators</h3><p>Metrics calculated by the LLFD scheduler</p></div></div><div class="indicator"><span>Load balance efficiency</span><b id="balance">—</b></div><div class="indicator"><span>Load imbalance</span><b id="imbalance">—</b></div><div class="indicator"><span>Ideal makespan lower bound</span><b id="ideal">—</b></div><div class="indicator"><span>Makespan gap vs. ideal</span><b id="gap">—</b></div></article>
+        <article class="panel"><div class="panel-head"><div><h3>Execution progress</h3><p>Completed tasks compared with total tasks</p></div><span id="progress-label" class="tag">0%</span></div><div class="progress"><div id="progress-bar"></div></div><div class="progress-foot"><span id="progress-text">0 of 0 tasks completed</span><span>LLFD</span></div><div class="note">For plan-only sessions, completion is not inferred from task assignments. Run Docker or Kubernetes mode to generate real execution results.</div></article>
+      </div>
+      <article class="panel" id="tasks"><div class="panel-head"><div><h3>Task assignment table</h3><p>Task-to-VM mapping generated by LLFD</p></div><span class="tag">LATEST MAPPING</span></div><div class="table-wrap"><table><thead><tr><th>TASK ID</th><th>LENGTH (MI)</th><th>PEs</th><th>ASSIGNED VM</th><th>HOST</th><th>PREDICTED (s)</th><th>FALLBACK</th></tr></thead><tbody id="task-rows"><tr><td colspan="7" class="muted">No mapping data</td></tr></tbody></table></div></article>
+      <article class="panel" id="logs"><div class="panel-head"><div><h3>Event logs</h3><p>Latest lines collected from the experiment log files</p></div><span class="tag green">FILE MONITOR</span></div><div class="log-toolbar"><span>TIME / SOURCE / MESSAGE</span><button id="clear-filter">Show all logs</button></div><div id="log-list" class="logs"><div class="muted">Waiting for log files…</div></div></article>
+      <footer>SOKA LLFD Monitoring · Data is read from the latest experiment session · <span id="footer-session">—</span></footer>
+    </section>
+  </main>
+</div>
+<script src="/static/js/dashboard.js"></script>
+</body></html>
