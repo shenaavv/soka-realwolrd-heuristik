@@ -1,15 +1,27 @@
 # Experiment sessions
 
-`run.sh` writes each execution into a timestamped directory:
+`run.sh` writes each execution into a timestamped directory (or into
+`RESULTS_DIR` when explicitly set):
 
 ```text
 sessions/<YYYYMMDD_HHMMSS>/
-├── logs/llfd.log
-├── mappings/llfd_mapping.json
 ├── parameters.txt
+├── logs/
+│   ├── llfd.log
+│   ├── llfd_100.log
+│   └── llfd_1000.log
+├── mappings/
+│   ├── llfd_mapping.json
+│   ├── llfd_mapping_100.json
+│   └── llfd_mapping_1000.json
 ├── summary.csv
-└── tasks_LLFD_n<N>_run1.csv
+├── summary_100.csv
+├── summary_1000.csv
+├── scale-summary.csv
+├── tasks_GoogleClusterTrace_n100_run1.csv
+└── tasks_GoogleClusterTrace_n1000_run1.csv
 ```
 
-The files are intentionally similar to the reference experiment output while
-containing LLFD-specific names and metrics.
+The `summary_<size>.csv`, mapping, task CSV, and log with the same size belong
+to the same Google Trace dataset. A scale session therefore keeps 100-task and
+1000-task results separately instead of mixing them.

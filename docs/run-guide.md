@@ -3,6 +3,59 @@
 Dokumen ini adalah panduan operasional lengkap untuk menjalankan mode plan,
 Docker Compose, dan Kubernetes menggunakan Kind.
 
+## 0. Daftar command cepat
+
+Jalankan dari root repository. Dashboard dijalankan di terminal terpisah dari
+runner eksperimen.
+
+```bash
+# Terminal 1: dashboard
+./dashboard/run_dashboard.sh
+
+# Terminal 2: plan demo, 8 task, tanpa container
+./run.sh plan
+# ./run.sh tanpa argumen juga berarti mode plan
+
+# Google Trace, 100 dan 1000 task, tanpa worker
+SIZES=100,1000 ./run.sh scale-plan
+
+# Sample 8 task pada Docker
+./run.sh docker
+
+# Sample 8 task pada Kubernetes
+./run.sh kind
+
+# Google Trace 100 dan 1000 task pada Kubernetes
+SIZES=100,1000 ./run.sh kind-scale
+```
+
+Command tambahan:
+
+```bash
+# Memilih satu ukuran Google Trace
+SIZES=1000 ./run.sh scale-plan
+
+# Menyimpan hasil ke folder yang mudah dikenali
+RESULTS_DIR=realworld/results/sessions/google-trace-scale \
+SIZES=100,1000 ./run.sh scale-plan
+
+# Menggunakan port dashboard berbeda
+DASHBOARD_PORT=8090 ./dashboard/run_dashboard.sh
+```
+
+Perbedaan mode:
+
+| Mode | Dataset default | Worker nyata |
+|---|---|---|
+| `plan` | sample 8 task | tidak |
+| `scale-plan` | Google Trace 100 dan 1000 | tidak |
+| `docker` | sample 8 task | Docker Compose |
+| `kind` | sample 8 task | Kubernetes Kind |
+| `kind-scale` | Google Trace 100 dan 1000 | Kubernetes Kind |
+
+Hasil selalu disimpan di `realworld/results/sessions/<session>/`, kecuali
+`RESULTS_DIR` ditentukan sendiri. Dashboard membaca session terbaru.
+
 ## 1. Struktur komponen
 
 Istilah `worker` memiliki dua arti yang berbeda:
@@ -90,13 +143,44 @@ export PATH="$HOME/.local/bin:$PATH"
 
 ## 3. Menjalankan plan tanpa container
 
+### Plan demo kecil
+
 ```bash
 chmod +x run.sh scripts/*.sh
 RESULTS_DIR=realworld/results/sessions/manual-plan ./run.sh plan
 ```
 
+Mode `plan` menggunakan dataset sample default yang berisi 8 task. Mode ini
+cocok untuk memeriksa format mapping dan output dasar, tetapi bukan mode
+eksperimen Google Trace 100/1000.
+
+### Plan Google Trace 100 dan 1000 task
+
+```bash
+RESULTS_DIR=realworld/results/sessions/google-trace-scale \
+SIZES=100,1000 ./run.sh scale-plan
+```
+
+Generator mengambil workload dari
+`src/main/resources/dataset/google_cluster_trace_sample.txt`, lalu membuat
+tepat dua dataset:
+
+```text
+src/main/resources/dataset/generated/GoogleClusterTrace_Dataset_100.txt
+src/main/resources/dataset/generated/GoogleClusterTrace_Dataset_1000.txt
+```
+
+Setiap ukuran diproses terpisah. `tasks` pada output harus bernilai 100 atau
+1000, dan file dengan suffix ukuran yang sama harus dipasangkan:
+
+```text
+summary_100.csv       ↔ llfd_mapping_100.json       ↔ llfd_100.log
+summary_1000.csv      ↔ llfd_mapping_1000.json      ↔ llfd_1000.log
+```
+
 Output ditampilkan di terminal dan disimpan pada:
 
+└── scale-summary.csv
 ```text
 realworld/results/sessions/manual-plan/
 ├── logs/llfd.log
@@ -247,7 +331,7 @@ bukan tanda VM gagal dibuat.
 Mode Docker:
 
 ```bash
-./run.sh scale-plan
+SIZES=100,1000 ./run.sh scale-plan
 ```
 
 Mode Kubernetes:
@@ -260,10 +344,11 @@ export PATH="$HOME/.local/bin:$PATH"
 Mode `kind-scale` membutuhkan Docker, Kind, kubectl, dan resource CPU/RAM lebih
 besar karena task benar-benar dikirim ke Pod Kubernetes.
 
-Secara default `run.sh scale-plan` dan `run.sh kind-scale` selalu membuat dan
-menjalankan dataset Google Trace berukuran 100 dan 1000 task. Ukuran lain hanya
-dijalankan jika diberikan secara eksplisit, misalnya `SIZES=10000 ./run.sh
-scale-plan`.
+`run.sh scale-plan` dan `run.sh kind-scale` menggunakan ukuran Google Trace
+`100,1000` secara default. Ukuran lain hanya dijalankan jika diberikan secara
+eksplisit, misalnya `SIZES=10000 ./run.sh scale-plan`. Gunakan `scale-plan`
+untuk validasi scheduler tanpa worker; gunakan `kind-scale` jika task ingin
+benar-benar dikirim ke Pod Kubernetes.
 
 ## 7. Perubahan konfigurasi yang terdokumentasi
 

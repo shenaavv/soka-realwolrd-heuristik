@@ -1,0 +1,7 @@
+session=20261031_131439
+algorithm=LLFD
+datacenter=DC-1
+hosts=2
+vms_per_host=2
+dataset=/home/shen/IT_ITS/sem_5/SOKA/soka-realwolrd-heuristik/src/main/resources/dataset/google_cluster_trace_sample.txt
+mode=scale-plan

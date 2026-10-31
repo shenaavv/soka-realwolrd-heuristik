@@ -410,6 +410,33 @@ Berikan izin eksekusi jika diperlukan:
 chmod +x run.sh scripts/*.sh
 ```
 
+### 10.0 Daftar command utama
+
+Jalankan dashboard dari root repository pada satu terminal:
+
+```bash
+./dashboard/run_dashboard.sh
+```
+
+Kemudian jalankan salah satu mode eksperimen pada terminal lain:
+
+| Kebutuhan | Command |
+|---|---|
+| Plan demo tanpa container, 8 task | `./run.sh plan` |
+| Plan default (sama dengan `plan`) | `./run.sh` |
+| Plan Google Trace, 100 dan 1000 task | `SIZES=100,1000 ./run.sh scale-plan` |
+| Eksekusi sample pada Docker | `./run.sh docker` |
+| Eksekusi sample pada Kubernetes | `./run.sh kind` |
+| Eksekusi Google Trace 100 dan 1000 pada Kubernetes | `SIZES=100,1000 ./run.sh kind-scale` |
+| Ubah folder hasil | `RESULTS_DIR=realworld/results/sessions/nama-session ./run.sh plan` |
+| Ubah ukuran Google Trace | `SIZES=1000 ./run.sh scale-plan` |
+| Matikan container Docker | `docker compose -f realworld/docker-compose.yml down` |
+| Hapus cluster Kind setelah demo | `kind delete cluster --name llfd` |
+
+`plan` memakai seed sample 8 task. Gunakan `scale-plan` untuk memvalidasi
+Google Trace 100/1000 tanpa worker, dan `kind-scale` jika task harus benar-benar
+dikirim ke Pod Kubernetes. Dashboard membaca session terbaru secara otomatis.
+
 ### 10.1 Membuat Plan Saja
 
 ```bash
@@ -437,6 +464,21 @@ DATASET=src/main/resources/dataset/google_cluster_trace_sample.txt ./run.sh plan
 ```bash
 RESULTS_DIR=realworld/results/sessions/manual-run ./run.sh plan
 ```
+
+### 10.5 Menjalankan Dashboard
+
+```bash
+./dashboard/run_dashboard.sh
+```
+
+Buka `http://127.0.0.1:8080`. Untuk port lain:
+
+```bash
+DASHBOARD_PORT=8090 ./dashboard/run_dashboard.sh
+```
+
+Dashboard menampilkan dataset, jumlah task, assignment, beban VM, metrik LLFD,
+progress eksekusi, dan log dari session terbaru.
 
 ---
 
@@ -880,7 +922,7 @@ eksperimen yang lengkap:
 - summary CSV;
 - log output bertimestamp.
 
-Perintah utama untuk menghasilkan eksperimen adalah:
+Untuk plan demo kecil dengan seed 8 task, gunakan:
 
 ```bash
 ./run.sh plan
@@ -898,6 +940,9 @@ atau:
 ./run.sh kind
 ```
 
+Untuk eksperimen Google Trace yang menggunakan 100 dan 1000 task, gunakan
+`scale-plan` atau `kind-scale` pada bagian 17.
+
 ---
 
 ## 17. Dataset Google Cluster Workload Trace
@@ -911,8 +956,10 @@ default:
 100 dan 1000 task
 ```
 
-Ukuran tambahan dapat dipilih dengan opsi `--sizes` atau environment variable
-`SIZES`, tetapi script `run.sh` secara default selalu menjalankan 100 dan 1000.
+Ukuran tambahan dapat dipilih dengan environment variable `SIZES`; tanpa
+override, `run.sh scale-plan` dan `run.sh kind-scale` menjalankan 100 dan 1000.
+Perintah `./run.sh plan` tetap memakai seed sample 8 task dan tidak sama dengan
+eksperimen skala Google Trace.
 
 Nilai `lengthMI` diambil dari workload trace seed dengan bootstrap resampling
 yang memiliki seed tetap, sehingga ukuran dataset dapat diulang dan hasilnya
@@ -947,7 +994,6 @@ realworld/results/sessions/<timestamp>/
 ├── logs/
 │   ├── dataset-generation.log
 │   ├── llfd_100.log
-│   ├── llfd_1000.log
 │   └── llfd_1000.log
 ├── mappings/
 │   ├── llfd_mapping_100.json
@@ -1026,7 +1072,9 @@ realworld/results/sessions/20261028_225640/
 │   └── ... llfd_mapping_10000.json
 ├── scale-summary.csv
 ├── summary_100.csv
-└── tasks_GoogleClusterTrace_n10000_run1.csv
+├── summary_1000.csv
+├── tasks_GoogleClusterTrace_n100_run1.csv
+└── tasks_GoogleClusterTrace_n1000_run1.csv
 ```
 
 Contoh isi `logs/llfd_1000.log`:

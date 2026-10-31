@@ -59,7 +59,7 @@ async function refresh(){
   setText('updated','Updated '+new Date().toLocaleTimeString());
   if(!d.available){$('content').classList.add('hidden');$('empty').classList.remove('hidden');$('empty').textContent=d.message;return;}
   $('content').classList.remove('hidden');$('empty').classList.add('hidden');
-  setText('session',d.session);setText('footer-session',d.session);setText('mode',d.mode);
+  setText('session',d.session);setText('dataset',d.dataset||'Dataset tidak diketahui');setText('footer-session',d.session);setText('mode',d.mode);
   setText('tasks',num(d.task_count,0));setText('completed',num(d.completed,0));
   setText('completion-note',d.result_available?'Real worker execution':'No real execution result yet');
   setText('makespan',seconds(d.makespan));setText('elapsed',d.elapsed==null?'—':seconds(d.elapsed));

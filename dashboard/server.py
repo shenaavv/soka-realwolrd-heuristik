@@ -62,8 +62,8 @@ def dashboard_data():
         candidates = sorted((session / "mappings").glob("llfd_mapping_*.json")) if (session / "mappings").exists() else []
         mapping = read_json(candidates[-1]) if candidates else {}
     summary_rows = read_csv(session / "summary.csv")
+    summary_candidates = sorted(session.glob("summary_*.csv"))
     if not summary_rows:
-        summary_candidates = sorted(session.glob("summary_*.csv"))
         if summary_candidates:
             summary_rows = read_csv(summary_candidates[-1])
     summary = summary_rows[0] if summary_rows else {}
@@ -74,6 +74,14 @@ def dashboard_data():
         for line in tail(path, 180):
             logs.append({"file": path.name, "line": line})
     result = read_json(session / "llfd-result.json")
+    selected_summary = summary_candidates[-1].stem.removeprefix("summary_") if summary_candidates else None
+    dataset_name = (
+        f"GoogleClusterTrace_Dataset_{selected_summary}"
+        if selected_summary else Path(session / "parameters.txt").read_text(
+            encoding="utf-8", errors="replace"
+        ).split("dataset=", 1)[-1].splitlines()[0].rsplit("/", 1)[-1]
+        if (session / "parameters.txt").exists() else None
+    )
     tasks = mapping.get("tasks", []) if mapping else []
     assignments = mapping.get("assignments", []) if mapping else []
     vms = mapping.get("vms", []) if mapping else []
@@ -85,6 +93,8 @@ def dashboard_data():
         "available": True, "session": session.name, "mode": execution_mode,
         "algorithm": (mapping or {}).get("algorithm", "LLFD"),
         "summary": summary, "task_count": task_count, "tasks": tasks,
+        "dataset": dataset_name,
+        "datasets": [path.stem.removeprefix("summary_") for path in summary_candidates],
         "assignments": assignments, "vms": vms, "loads": loads,
         "makespan": (mapping or {}).get("makespan_predicted_seconds",
                      summary.get("predicted_makespan_seconds")),

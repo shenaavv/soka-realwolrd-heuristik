@@ -236,7 +236,8 @@ PY
     done
     ;;
   *)
-    echo "Usage: $0 [plan|docker|kind]" >&2
+    echo "Usage: $0 [plan|scale-plan|docker|kind|kind-scale]" >&2
+    echo "  scale-plan: generate and schedule Google Trace datasets with SIZES=${SIZES}" >&2
     exit 2
     ;;
 esac

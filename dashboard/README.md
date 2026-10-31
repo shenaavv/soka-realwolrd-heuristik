@@ -11,6 +11,7 @@ topologi Docker/Kubernetes, maupun format hasil eksperimen.
 - Ringkasan topologi DC-1, host, dan empat VM.
 - Metrik optimasi LLFD jika tersedia pada `summary.csv`.
 - Tabel task assignment dari `mappings/llfd_mapping*.json`.
+- Nama dataset aktif dan daftar ukuran Google Trace yang tersedia pada session.
 - Event log dari seluruh file `.log` pada session terbaru.
 - Status container Docker jika perintah `docker ps` tersedia.
 - Auto-refresh setiap 3 detik.
@@ -35,6 +36,17 @@ Jalankan eksperimen di terminal lain:
 ```bash
 ./run.sh plan
 ```
+
+Untuk eksperimen Google Cluster Workload Trace yang direkomendasikan:
+
+```bash
+SIZES=100,1000 ./run.sh scale-plan
+```
+
+Perintah tersebut membuat tepat 100 dan 1000 task dari seed
+`src/main/resources/dataset/google_cluster_trace_sample.txt`. Dashboard
+menampilkan dataset yang terakhir dipilih dan membaca `summary_100.csv` atau
+`summary_1000.csv` beserta mapping yang sesuai.
 
 atau untuk eksekusi pada Docker:
 
@@ -78,6 +90,9 @@ dashboard/
 ## Catatan interpretasi
 
 - `Predicted makespan` adalah estimasi scheduler berdasarkan `lengthMI / MIPS`.
+- `GoogleClusterTrace_Dataset_100` dan `GoogleClusterTrace_Dataset_1000`
+  masing-masing berarti 100 dan 1000 task yang di-sampling dari seed Google
+  Trace; keduanya bukan dataset sample 8 task untuk demo dasar.
 - `Real execution` berasal dari `llfd-result.json`, yang dibuat pada mode
   eksekusi (Docker/Kind), bukan mode `plan`.
 - Progress completed hanya dihitung dari hasil task aktual di `llfd-result.json`.
