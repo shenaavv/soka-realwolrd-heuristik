@@ -1,0 +1,165 @@
+{
+  "algorithm": "LLFD",
+  "tasks": [
+    {
+      "id": 0,
+      "length_mi": 900000.0,
+      "pes": 1
+    },
+    {
+      "id": 1,
+      "length_mi": 600000.0,
+      "pes": 1
+    },
+    {
+      "id": 2,
+      "length_mi": 450000.0,
+      "pes": 1
+    },
+    {
+      "id": 3,
+      "length_mi": 300000.0,
+      "pes": 1
+    },
+    {
+      "id": 4,
+      "length_mi": 150000.0,
+      "pes": 1
+    },
+    {
+      "id": 5,
+      "length_mi": 100000.0,
+      "pes": 1
+    },
+    {
+      "id": 6,
+      "length_mi": 75000.0,
+      "pes": 1
+    },
+    {
+      "id": 7,
+      "length_mi": 50000.0,
+      "pes": 1
+    }
+  ],
+  "vms": [
+    {
+      "id": "vm-1",
+      "host": "host-1",
+      "pes": 4,
+      "mips": 2500,
+      "endpoint": "http://127.0.0.1:9101"
+    },
+    {
+      "id": "vm-2",
+      "host": "host-1",
+      "pes": 2,
+      "mips": 1500,
+      "endpoint": "http://127.0.0.1:9102"
+    },
+    {
+      "id": "vm-3",
+      "host": "host-2",
+      "pes": 4,
+      "mips": 2500,
+      "endpoint": "http://127.0.0.1:9103"
+    },
+    {
+      "id": "vm-4",
+      "host": "host-2",
+      "pes": 2,
+      "mips": 1500,
+      "endpoint": "http://127.0.0.1:9104"
+    }
+  ],
+  "assignments": [
+    {
+      "task_id": 0,
+      "lengthMI": 900000.0,
+      "pes": 1,
+      "vm": "vm-1",
+      "host": "host-1",
+      "predicted_seconds": 360.0,
+      "fallback": false
+    },
+    {
+      "task_id": 1,
+      "lengthMI": 600000.0,
+      "pes": 1,
+      "vm": "vm-2",
+      "host": "host-1",
+      "predicted_seconds": 400.0,
+      "fallback": false
+    },
+    {
+      "task_id": 2,
+      "lengthMI": 450000.0,
+      "pes": 1,
+      "vm": "vm-3",
+      "host": "host-2",
+      "predicted_seconds": 180.0,
+      "fallback": false
+    },
+    {
+      "task_id": 3,
+      "lengthMI": 300000.0,
+      "pes": 1,
+      "vm": "vm-4",
+      "host": "host-2",
+      "predicted_seconds": 200.0,
+      "fallback": false
+    },
+    {
+      "task_id": 4,
+      "lengthMI": 150000.0,
+      "pes": 1,
+      "vm": "vm-3",
+      "host": "host-2",
+      "predicted_seconds": 60.0,
+      "fallback": false
+    },
+    {
+      "task_id": 5,
+      "lengthMI": 100000.0,
+      "pes": 1,
+      "vm": "vm-4",
+      "host": "host-2",
+      "predicted_seconds": 66.66666666666667,
+      "fallback": false
+    },
+    {
+      "task_id": 6,
+      "lengthMI": 75000.0,
+      "pes": 1,
+      "vm": "vm-3",
+      "host": "host-2",
+      "predicted_seconds": 30.0,
+      "fallback": false
+    },
+    {
+      "task_id": 7,
+      "lengthMI": 50000.0,
+      "pes": 1,
+      "vm": "vm-4",
+      "host": "host-2",
+      "predicted_seconds": 33.333333333333336,
+      "fallback": false
+    }
+  ],
+  "loads": {
+    "vm-1": 360.0,
+    "vm-2": 400.0,
+    "vm-3": 270.0,
+    "vm-4": 300.0
+  },
+  "makespan_predicted_seconds": 400.0,
+  "optimization": {
+    "average_load_seconds": 332.5,
+    "min_load_seconds": 270.0,
+    "max_load_seconds": 400.0,
+    "load_balance_efficiency_percent": 83.125,
+    "load_imbalance_percent": 32.5,
+    "ideal_makespan_lower_bound_seconds": 328.125,
+    "makespan_gap_from_ideal_percent": 21.904761904761916
+  }
+}

@@ -9,7 +9,7 @@ Jalankan dari root repository. Dashboard dijalankan di terminal terpisah dari
 runner eksperimen.
 
 ```bash
-# Terminal 1: dashboard
+# Terminal 1: dashboard (!)
 ./dashboard/run_dashboard.sh
 
 # Terminal 2: plan demo, 8 task, tanpa container
@@ -25,19 +25,34 @@ SIZES=100,1000 ./run.sh scale-plan
 # Sample 8 task pada Kubernetes
 ./run.sh kind
 
-# Google Trace 100 dan 1000 task pada Kubernetes
+# Google Trace 100 dan 1000 task pada Kubernetes (!)
 SIZES=100,1000 ./run.sh kind-scale
 ```
 
 Command tambahan:
 
 ```bash
-# Memilih satu ukuran Google Trace
+# Memilih satu ukuran Google Trace 
 SIZES=1000 ./run.sh scale-plan
 
 # Menyimpan hasil ke folder yang mudah dikenali
 RESULTS_DIR=realworld/results/sessions/google-trace-scale \
 SIZES=100,1000 ./run.sh scale-plan
+
+# Cek worker (!)
+kubectl --context kind-llfd -n dc-1 get pods -o wide
+kubectl --context kind-llfd get nodes
+
+# Mematikan worker kubernetes (!)
+kubectl --context kind-llfd delete \
+  -f realworld/k8s-topology.yaml
+
+# Mematikan seluruh cluster kind (!)
+kind delete cluster --name llfd
+
+# Verifikasi
+sudo docker ps
+kubectl config get-contexts
 
 # Menggunakan port dashboard berbeda
 DASHBOARD_PORT=8090 ./dashboard/run_dashboard.sh

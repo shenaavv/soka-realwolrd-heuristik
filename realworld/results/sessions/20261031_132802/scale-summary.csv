@@ -1,0 +1,3 @@
+dataset,tasks,predicted_makespan_seconds,average_vm_load_seconds,min_vm_load_seconds,max_vm_load_seconds,load_balance_efficiency_percent,load_imbalance_percent,ideal_makespan_lower_bound_seconds,makespan_gap_from_ideal_percent
+GoogleClusterTrace_Dataset_100,100,4360.0,4352.5,4349.999999999999,4360.0,99.82798165137615,0.2293577981651585,4353.125,0.15793251974156597
+GoogleClusterTrace_Dataset_1000,1000,41300.0,41292.5,41280.0,41300.0,99.9818401937046,0.048426150121065374,41290.625,0.02270491182925216
